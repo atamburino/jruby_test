@@ -1,6 +1,6 @@
-Feature: Hello World
+Feature: Hello World Test
 
-    Scenario: Basic Greeting
-        Given I have a working Cucumber setup
-        When I run my tests
-        Then I should see them pass
+  Scenario: Validate test setup
+    Given I have launched the browser
+    When I open the login page
+    Then I should see the correct page title
