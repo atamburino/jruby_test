@@ -1,6 +1,12 @@
-Feature: Hello World Test
+Feature: Login Feature Test
 
+  @positive
   Scenario: Validate test setup
-    Given I have launched the browser
     When I open the login page
     Then I should see the correct page title
+
+  @negative
+  Scenario: Invalid login
+    When I open the login page
+    When I enter invalid credentials
+    Then I should see an error message
