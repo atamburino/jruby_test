@@ -10,3 +10,28 @@ Feature: Login Feature Test
     When I open the login page
     When I enter invalid credentials
     Then I should see an error message
+
+  @positive
+  Scenario: Valid login with admin role
+    When I open the login page
+    And I enter valid admin credentials
+    Then I should see the admin dashboard
+
+  @positive
+  Scenario: Valid login with user role
+    When I open the login page
+    And I enter valid user credentials
+    Then I should see the user dashboard
+
+  @positive
+  Scenario: Password recovery
+    When I open the login page
+    And I click on the forgot password link
+    And I enter my email address
+    Then I should receive a password recovery email
+
+  @negative
+  Scenario: Account lockout after multiple failed attempts
+    When I open the login page
+    And I enter invalid credentials three times
+    Then I should see an account lockout message
