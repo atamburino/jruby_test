@@ -60,4 +60,4 @@ end
 #     email_field = @driver.find_element(name: 'username') # or 'email' depending on the page
 #     is_valid = @driver.execute_script("return arguments[0].checkValidity();", email_field)
 #     expect(is_valid).to be false
-  end  
+#   end  
