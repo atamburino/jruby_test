@@ -1,7 +1,22 @@
 require 'selenium-webdriver'
 
-When('I open the login page') do
+def navigate_to_login_page
   @driver.navigate.to "https://the-internet.herokuapp.com/login"
+end
+
+def enter_credentials(username, password)
+  @driver.find_element(name: 'username').send_keys(username)
+  @driver.find_element(name: 'password').send_keys(password)
+  @driver.find_element(css: '.radius').click
+end
+
+def find_flash_message
+  wait = Selenium::WebDriver::Wait.new(timeout: 20)
+  wait.until { @driver.find_element(css: 'div#flash') }
+end
+
+When('I open the login page') do
+  navigate_to_login_page
 end
 
 Then('I should see the correct page title') do
@@ -9,31 +24,23 @@ Then('I should see the correct page title') do
 end
 
 When('I enter {string} credentials') do |type|
-  username, password = case type
-                       when 'valid admin'
-                         ['admin@example.com', 'adminpass']
-                       when 'valid user'
-                         ['user@example.com', 'userpass']
-                       else
-                         ['wrong@gmail.com', 'wrong']
-                       end
-  @driver.find_element(name: 'username').send_keys(username)
-  @driver.find_element(name: 'password').send_keys(password)
-  @driver.find_element(css: '.radius').click
+  credentials = {
+    'valid admin' => ['admin@example.com', 'adminpass'],
+    'valid user' => ['user@example.com', 'userpass'],
+    'invalid' => ['wrong@gmail.com', 'wrong']
+  }
+  username, password = credentials[type]
+  enter_credentials(username, password)
 end
 
 Then('I should see the {string} message') do |message_type|
-  wait = Selenium::WebDriver::Wait.new(timeout: 20)
-  flash = wait.until { @driver.find_element(css: 'div#flash') }
-  expected_message = case message_type
-                     when 'error'
-                       'Your username is invalid!'
-                     when 'account lockout'
-                       'Your account is locked!'
-                     else
-                       'Success'
-                     end
-  expect(flash.text.strip).to include(expected_message)
+  flash = find_flash_message
+  expected_messages = {
+    'error' => 'Your username is invalid!',
+    'account lockout' => 'Your account is locked!',
+    'success' => 'Success'
+  }
+  expect(flash.text.strip).to include(expected_messages[message_type])
 end
 
 When('I click on the forgot password link') do
